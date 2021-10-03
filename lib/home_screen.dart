@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController _idController;
 
   late PlayerState _playerState;
+  late YoutubeMetaData _videoMetaData;
   double _volume = 100;
   bool _isMuted = false;
   bool _isPlayerReady = false;
@@ -51,9 +52,17 @@ class _HomeScreenState extends State<HomeScreen> {
         loop: false,
         forceHD: false,
       ),
-    );
+    )..addListener(listener);
     _idController = TextEditingController();
     _playerState = PlayerState.unknown;
+  }
+  void listener() {
+    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
+      setState(() {
+        _playerState = _controller.value.playerState;
+        _videoMetaData = _controller.metadata;
+      });
+    }
   }
 
   @override
